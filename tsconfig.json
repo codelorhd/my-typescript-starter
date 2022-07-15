@@ -11,6 +11,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // recommended to add these
+    "alwaysStrict": true,
+    "noImplicitAny": true,
   }
 }
