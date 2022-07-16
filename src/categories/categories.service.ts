@@ -4,8 +4,8 @@ import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
 import Category from './category.entity';
 import createCategoryDto from './dto/createCategory.dto';
-import CategoryNotFoundException from 'src/exceptions/notFoundExceptions';
-import DuplicateResourceException from 'src/exceptions/duplicateResource.exception';
+import CategoryNotFoundException from '../exceptions/notFoundExceptions';
+import DuplicateResourceException from '../exceptions/duplicateResource.exception';
 import UpdateCategory from './dto/UpdateCategory.dto';
 
 @Injectable()

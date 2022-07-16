@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 
 
 import RegisterDto from './dto/register.dto';
-import User from 'src/users/entities/user.entity';
+import User from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { PostgresErrorCode } from './../database/postgresErrorCodes.enum';
 import { JwtService } from '@nestjs/jwt';

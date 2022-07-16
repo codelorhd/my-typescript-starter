@@ -1,7 +1,8 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
-import Category from 'src/categories/category.entity';
-import User from 'src/users/entities/user.entity';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import Category from '../categories/category.entity';
+import User from '../users/entities/user.entity';
+
 
 @Entity()
 class Post {

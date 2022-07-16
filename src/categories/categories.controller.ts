@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import JwtAuthenticationGuard from '../authentication/guards/jwt-authentication.guard';
-import FindOneParams from 'src/utils/findOneParams';
-import RequestWithUser from 'src/authentication/requestWithUser.interface';
+import FindOneParams from '../utils/findOneParams';
+import RequestWithUser from '../authentication/requestWithUser.interface';
 import CategoryService from './categories.service';
 import CreateCategoryDTO from './dto/createCategory.dto';
 import UpdateCategory from './dto/UpdateCategory.dto';

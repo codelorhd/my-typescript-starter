@@ -6,8 +6,8 @@ import UpdatePostDto from './dto/updatePost.dto'
 import { Repository } from 'typeorm';
 import Post from './post.entity';
 import PostNotFoundException from '../exceptions/postNotFound.exception';
-import User from 'src/users/entities/user.entity';
-import CategoryService from 'src/categories/categories.service';
+import User from '../users/entities/user.entity';
+import CategoryService from '../categories/categories.service';
 
 @Injectable()
 export default class PostService {
