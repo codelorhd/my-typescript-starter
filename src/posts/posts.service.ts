@@ -5,6 +5,7 @@ import CreatePostDto from './dto/createPost.dto';
 import UpdatePostDto from './dto/updatePost.dto'
 import { Repository } from 'typeorm';
 import Post from './post.entity';
+import PostNotFoundException from './exceptions/postNotFound.exception';
 
 @Injectable()
 export default class PostService {
@@ -25,7 +26,7 @@ export default class PostService {
         if (post) {
             return post;
         }
-        throw new HttpException('Post not found', HttpStatus.NOT_FOUND)
+        throw new PostNotFoundException(id);
     }
 
     async replacePost(id: number, post: UpdatePostDto) {
@@ -34,7 +35,7 @@ export default class PostService {
         if (updatedPost) {
             return updatedPost
         }
-        throw new HttpException('Post not found', HttpStatus.NOT_FOUND)
+        throw new PostNotFoundException(id)
     }
 
     async createPost(post: CreatePostDto) {
@@ -46,7 +47,7 @@ export default class PostService {
     async deletePost(id: number) {
         const deleteResponse = await this.postsRepository.delete(id);
         if (!deleteResponse.affected) {
-            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+            throw new PostNotFoundException(id)
         }
     }
 }

@@ -1,10 +1,12 @@
 import * as Joi from '@hapi/joi';
-import { Module } from '@nestjs/common';
+import { Module, NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/users.module';
+import { APP_FILTER } from '@nestjs/core';
+import { ExceptionsLoggerFilter, CustomHttpExceptionFilter } from './utils/exceptionsLogger.filter';
 
 @Module({
   // modules in the application
@@ -29,7 +31,10 @@ import { UserModule } from './users/users.module';
   controllers: [],
 
   // providers to instantiate - they may be used at least across this module
-  providers: [],
+  providers: [
+    // { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
+    { provide: APP_FILTER, useClass: CustomHttpExceptionFilter }
+  ],
 
   // a subset of providers that are available in other modules
   exports: []
