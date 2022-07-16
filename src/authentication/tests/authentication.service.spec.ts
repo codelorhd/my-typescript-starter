@@ -1,4 +1,3 @@
-import { AuthenticationService } from '../authentication.service';
 import { Test } from '@nestjs/testing';
 
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -6,8 +5,13 @@ import User from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { mockedConfigService } from '../../utils/mocks/config.service';
 import { ConfigService } from '@nestjs/config';
+import { AuthenticationService } from '../authentication.service';
 import { mockedJwtService } from '../../utils/mocks/jwt.service';
 import { JwtService } from '@nestjs/jwt';
+
+
+// * This tests services inside this module alone.
+
 
 describe('The AuthenticationService', () => {
     let authenticationService: AuthenticationService;
@@ -33,7 +37,9 @@ describe('The AuthenticationService', () => {
         }).compile();
         authenticationService = await module.get<AuthenticationService>(AuthenticationService);
     })
-    describe('when creating a cookie', () => {
+
+    // * unit test -> services
+    describe('when creating a bearer token', () => {
         it('should return a string', () => {
             const userId = "1";
             expect(
@@ -41,4 +47,5 @@ describe('The AuthenticationService', () => {
             ).toEqual('string')
         })
     })
+
 });

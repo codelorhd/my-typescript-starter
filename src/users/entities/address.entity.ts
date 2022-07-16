@@ -20,7 +20,7 @@ class Address {
     // .find({ relations: ['user]})
     // When setting up bi-directional entities do not use JoinTable here since it has been used in User table
     @OneToOne(() => User, (user: User) => user.address)
-    public user: User;
+    public user?: User;
 }
 
 export default Address

@@ -32,7 +32,7 @@ class User {
 
     // OneToMany must declare the ManyToOne in the other table
     @OneToMany(() => Post, (post: Post) => post.author)
-    public posts: Post[]
+    public posts?: Post[]
 }
 
 export default User;
