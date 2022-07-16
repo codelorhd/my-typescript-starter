@@ -4,7 +4,7 @@ const mockedUser: User = {
     id: "1",
     email: 'user@email.com',
     name: 'John',
-    password: 'hash',
+    password: '$2b$10$LcCkI9uFktOMuIDnxVYRceeCEBIH2/PC/fSMh6iyDrgvYXDUTZSGa', //strongPASSWORD
     address: {
         id: "1",
         street: 'streetName',

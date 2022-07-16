@@ -52,7 +52,6 @@ export class AuthenticationService {
             if (error?.code == PostgresErrorCode.UniqueViolation) {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST)
             }
-            console.log(error)
             throw new HttpException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
@@ -64,7 +63,7 @@ export class AuthenticationService {
             delete user.password
             return user;
         } catch (error) {
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST)
+            throw new HttpException('Wrong credentials provided', HttpStatus.FORBIDDEN)
         }
     }
 

@@ -75,7 +75,6 @@ export default class CategoryService {
 
     async deleteCategory(id: string) {
         const deleteResponse = await this.categoriesRepository.delete(id)
-        console.log(deleteResponse.affected)
         if (!deleteResponse.affected) {
             throw new CategoryNotFoundException(id)
         }

@@ -11,9 +11,11 @@ import { mockedJwtService } from '../../utils/mocks/jwt.service';
 import { JwtService } from '@nestjs/jwt';
 import mockedUser from './user.mock';
 
+// * We mock bcrypt here
 jest.mock('bcrypt');
+
 const USER_EMAIL = "user@email.com"
-const PASSWORD = "strong=password"
+const PASSWORD = "strongPASSWORD"
 
 // * This tests integration with other services this module depends on
 

@@ -1,25 +1,27 @@
-import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
+import { Test } from '@nestjs/testing';
+import { JwtModule } from '@nestjs/jwt';
 
 import { getRepositoryToken } from '@nestjs/typeorm';
-import User from '../../users/entities/user.entity';
-import { UsersService } from '../../users/users.service';
 import { mockedConfigService } from '../../utils/mocks/config.service';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthenticationService } from '../authentication.service';
-import { mockedJwtService } from '../../utils/mocks/jwt.service';
-import { JwtService } from '@nestjs/jwt';
-import mockedUser from './user.mock';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AuthenticationController } from '../authentication.controller';
+import { JWTFromAuthHeaderStrategy } from '../strategies/jwt.header.strategy';
+import { LocalStrategy } from '../strategies/local.strategy';
 
+import User from '../../users/entities/user.entity';
+import mockedUser from './user.mock';
+import { UsersService } from '../../users/users.service';
 
-
-// * This tests integration with other services this module depends on
+// * This tests performs http tests across all the endpoints in the module
 
 describe('The AuthenticationService', () => {
     let app: INestApplication
     let userData: User
+    let findUser: jest.Mock
+
 
     beforeEach(async () => {
         userData = {
@@ -27,10 +29,27 @@ describe('The AuthenticationService', () => {
         }
         const usersRepository = {
             create: jest.fn().mockResolvedValue(userData),
+            findOne: findUser,
             save: jest.fn().mockReturnValue(Promise.resolve())
         }
+        findUser = jest.fn().mockReturnValue(userData)
+
         const module = await Test.createTestingModule({
             controllers: [AuthenticationController],
+            imports: [
+                JwtModule.registerAsync({
+                    imports: [ConfigModule],
+                    inject: [ConfigService],
+                    useFactory: async (configService: ConfigService) => ({
+                        // * using our own configService to read from our custom env
+                        // mockedConfigService instead of configService
+                        secret: mockedConfigService.get('JWT_SECRET'),
+                        signOptions: {
+                            expiresIn: `${mockedConfigService.get('JWT_EXPIRATION_TIME')}s`,
+                        }
+                    })
+                })
+            ],
             providers: [
                 UsersService,
                 AuthenticationService,
@@ -39,16 +58,15 @@ describe('The AuthenticationService', () => {
                     useValue: mockedConfigService,
                 },
                 {
-                    provide: JwtService,
-                    useValue: mockedJwtService
-                },
-                {
                     provide: getRepositoryToken(User),
                     // mocked repository
                     useValue: usersRepository,
-                }
+                },
+                LocalStrategy, JWTFromAuthHeaderStrategy
+
             ],
-        }).compile();
+        })
+            .compile();
         app = module.createNestApplication()
         app.useGlobalPipes(new ValidationPipe())
         await app.init()
@@ -81,5 +99,44 @@ describe('The AuthenticationService', () => {
         })
     })
 
+
+    describe('when singing in', () => {
+        let validToken = "";
+        describe('and using valid data', () => {
+            it('it should return the bearer token', () => {
+                return request(app.getHttpServer())
+                    .post('/authentication/log-in')
+                    .send({
+                        email: mockedUser.email,
+                        password: 'strongPASSWORD'
+                    }).expect(200).expect((data) => {
+                        validToken = data.body['access_token']
+                    })
+            })
+        })
+
+        describe('and using valid data', () => {
+            it('logged in user should be able to make authenticated request', () => {
+                return request(app.getHttpServer())
+                    .get('/authentication')
+                    .set('Authorization', "Bearer " + validToken)
+                    .expect(200)
+            })
+        })
+
+
+        describe('and using in valid data', () => {
+            it('it should should fail', () => {
+                return request(app.getHttpServer())
+                    .post('/authentication/log-in')
+                    .send({
+                        email: mockedUser.email,
+                        password: 'invalid-password'
+                    }).expect(403).expect((data) => {
+                        data.body['access_token']
+                    })
+            })
+        })
+    })
 
 });

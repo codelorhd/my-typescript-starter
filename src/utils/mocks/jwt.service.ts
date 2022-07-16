@@ -1,3 +1,3 @@
 export const mockedJwtService = {
-    sign: () => ''
+    sign: () => 'long-access-token'
 }
