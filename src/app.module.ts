@@ -1,18 +1,19 @@
+import { APP_FILTER } from '@nestjs/core';
 import * as Joi from '@hapi/joi';
-import { Module, NotFoundException } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { DatabaseModule } from './database/database.module';
+import { CategoriesModule } from './categories/categories.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { CustomHttpExceptionFilter } from './utils/exceptionsLogger.filter';
 import { UserModule } from './users/users.module';
-import { APP_FILTER } from '@nestjs/core';
-import { ExceptionsLoggerFilter, CustomHttpExceptionFilter } from './utils/exceptionsLogger.filter';
 
 @Module({
   // modules in the application
   // importing a module here instructs nestjs where to get 
   // the controllers and providers (services) for that module
-  imports: [PostsModule, ConfigModule.forRoot({
+  imports: [ConfigModule.forRoot({
     //ConfigModule reads from the .env file and Joi converts 
     // them to ts datatypes
     validationSchema: Joi.object({
@@ -25,7 +26,11 @@ import { ExceptionsLoggerFilter, CustomHttpExceptionFilter } from './utils/excep
       JWT_SECRET: Joi.string().required(),
       JWT_EXPIRATION_TIME: Joi.string().required(),
     })
-  }), DatabaseModule, AuthenticationModule],
+  }), DatabaseModule,
+    AuthenticationModule,
+    CategoriesModule,
+    PostsModule,
+    UserModule],
 
   // controllers to instantiate
   controllers: [],

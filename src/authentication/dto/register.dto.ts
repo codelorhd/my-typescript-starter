@@ -12,6 +12,11 @@ export class RegisterDto {
     @IsNotEmpty()
     @MinLength(7)
     password: string;
+
+
+    // address DTO is not here, cascade was set to true in
+    // user entity file making it possible to send address alongside
+    // why this is so, I do not know as at now.
 }
 
 export default RegisterDto;

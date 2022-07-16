@@ -1,6 +1,7 @@
-import { IsNumberString } from "class-validator";
+import { IsString, IsUUID } from "class-validator";
 
 export default class FindOneParams {
-    @IsNumberString()
+    // if you use mongodb @IsMongoId() might be useful here
+    @IsUUID()
     id: string
 }

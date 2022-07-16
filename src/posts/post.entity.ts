@@ -1,10 +1,12 @@
-import { Exclude, Transform } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+
+import Category from 'src/categories/category.entity';
+import User from 'src/users/entities/user.entity';
 
 @Entity()
 class Post {
-    @PrimaryGeneratedColumn()
-    public id: number;
+    @PrimaryGeneratedColumn('uuid')
+    public id: string;
 
     @Column()
     public title: string
@@ -15,6 +17,19 @@ class Post {
 
     @Column({ nullable: true })
     public category?: string
+
+    @ManyToOne(() => User, (author: User) => author.posts)
+    public author: User
+
+    // Uni-Direction
+    // @ManyToMany(() => Category)
+    // @JoinTable()
+    // public categories: Category[]
+
+    // Bi-Directional: do not forget to use JoinTable only one side
+    @ManyToMany(() => Category, (category: Category) => category.posts)
+    @JoinTable()
+    public categories: Category[];
 }
 
 export default Post;

@@ -1,13 +1,13 @@
+import { JwtModule } from "@nestjs/jwt";
 import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from "@nestjs/passport";
 
+import { UserModule } from "src/users/users.module";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { AuthenticationService } from "./authentication.service";
-import { UserModule } from "src/users/users.module";
 import { AuthenticationController } from './authentication.controller';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from "@nestjs/jwt";
-import { JwtInCookieStrategy } from './strategies/jwt.cookie.strategy';
+import { JWTFromAuthHeaderStrategy } from './strategies/jwt.header.strategy';
 
 @Module({
     imports: [
@@ -24,7 +24,7 @@ import { JwtInCookieStrategy } from './strategies/jwt.cookie.strategy';
             })
         })
     ],
-    providers: [AuthenticationService, LocalStrategy, JwtInCookieStrategy],
+    providers: [AuthenticationService, LocalStrategy, JWTFromAuthHeaderStrategy],
     controllers: [AuthenticationController]
 })
 export class AuthenticationModule { }

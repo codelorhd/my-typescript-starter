@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common'
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards, UseInterceptors } from '@nestjs/common'
 import PostsService from './posts.service';
 import CreatePostDto from './dto/createPost.dto'
 import UpdatePostDto from './dto/updatePost.dto'
 import JwtAuthenticationGuard from '../authentication/guards/jwt-authentication.guard';
 import FindOneParams from 'src/utils/findOneParams';
+import RequestWithUser from 'src/authentication/requestWithUser.interface';
 
 @Controller('posts')
 export default class PostsController {
@@ -20,24 +21,23 @@ export default class PostsController {
 
     // GET /posts/123
     @Get(':id')
-    // if you use mongodb @IsMongoId() might be useful here
     getPostById(@Param() { id }: FindOneParams) {
-        return this.postsService.getPostById(Number(id))
+        return this.postsService.getPostById((id))
     }
 
     @Post()
     @UseGuards(JwtAuthenticationGuard)
-    async createPost(@Body() post: CreatePostDto) {
-        return this.postsService.createPost(post);
+    async createPost(@Body() post: CreatePostDto, @Req() req: RequestWithUser) {
+        return this.postsService.createPost(post, req.user);
     }
 
     @Patch(':id')
-    async replacePost(@Param('id') id: string, @Body() post: UpdatePostDto) {
-        return this.postsService.replacePost(Number(id), post);
+    async replacePost(@Param() { id }: FindOneParams, @Body() post: UpdatePostDto) {
+        return this.postsService.updatePost(id, post);
     }
 
     @Delete(':id')
-    async deletePost(@Param('id') id: string) {
-        this.postsService.deletePost(Number(id))
+    async deletePost(@Param() { id }: FindOneParams) {
+        this.postsService.deletePost(id)
     }
 }

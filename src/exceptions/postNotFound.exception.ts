@@ -5,7 +5,7 @@ import { NotFoundException } from '@nestjs/common';
 // the built-in HTTP exceptions, failure to do this will trigger a 500 internal server error.
 
 export default class PostNotFoundException extends NotFoundException {
-    constructor(postId: number) {
+    constructor(postId: string) {
         super(`Post with id ${postId} not found`)
     }
 }

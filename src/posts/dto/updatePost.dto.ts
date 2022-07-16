@@ -1,9 +1,9 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator"
+import { IsString, IsNotEmpty, IsOptional, IsUUID } from "class-validator"
 
 export default class UpdatePostDto {
-    @IsNumber()
+    @IsUUID()
     @IsOptional()
-    id: number
+    id: string
 
     @IsString()
     @IsNotEmpty()

@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 
 
 import RegisterDto from './dto/register.dto';
-import User from 'src/users/user.entity';
+import User from 'src/users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { PostgresErrorCode } from './../database/postgresErrorCodes.enum';
 import { JwtService } from '@nestjs/jwt';
@@ -27,10 +27,15 @@ export class AuthenticationService {
         return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
     }
 
-    public getCookieWithJwtToken(userId: number) {
+    public getCookieWithJwtToken(userId: string) {
         const payload: TokenPayload = { userId };
         const token = this.jwtService.sign(payload)
         return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+    }
+
+    public getBearerToken(userId: string) {
+        const payload: TokenPayload = { userId };
+        return this.jwtService.sign(payload)
     }
 
     public async register(registrationData: RegisterDto): Promise<User> {
@@ -52,11 +57,11 @@ export class AuthenticationService {
         }
     }
 
-    public async getAuthenticatedUser(email: string, plainTextPassword: string) {
+    public async getAuthenticatedUser(email: string, plainTextPassword: string): Promise<User> {
         try {
             const user = await this.usersService.getByEmail(email)
             await this.verifyPassword(plainTextPassword, user.password)
-            user.password = undefined;
+            delete user.password
             return user;
         } catch (error) {
             throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST)
