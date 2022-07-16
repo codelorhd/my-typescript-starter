@@ -1,3 +1,4 @@
+import { Exclude, Transform } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
@@ -10,6 +11,10 @@ class Post {
 
     @Column()
     public content: string
+
+
+    @Column({ nullable: true })
+    public category?: string
 }
 
 export default Post;

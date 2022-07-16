@@ -1,4 +1,4 @@
-import { Body, Req, Controller, HttpCode, Post, UseGuards, Res, Get } from "@nestjs/common";
+import { Body, Req, Controller, HttpCode, Post, UseGuards, Res, Get, SerializeOptions, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 import { AuthenticationService } from "./authentication.service";
@@ -8,6 +8,15 @@ import RequestWithUser from "./requestWithUser.interface";
 import JwtAuthenticationGuard from "./guards/jwt-authentication.guard";
 
 @Controller('authentication')
+@UseInterceptors(ClassSerializerInterceptor)
+// * By default, all properties of our entities are exposed.
+// * We can change this strategy by providing additional options to 
+// * the class-transformer.
+// * This will force you to use the Expose() on the entities variables you want
+// * to expose to the user
+@SerializeOptions({
+    strategy: 'excludeAll'
+})
 export class AuthenticationController {
     constructor(
         private readonly authenticationService: AuthenticationService
@@ -38,7 +47,7 @@ export class AuthenticationController {
         const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
         response.set('Set-Cookie', cookie)
 
-        user.password = undefined;
+        // user.password = undefined;
         return response.send(user)
     }
 }
